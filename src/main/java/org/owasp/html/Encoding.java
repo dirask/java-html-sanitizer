@@ -28,9 +28,8 @@
 
 package org.owasp.html;
 
-import java.io.IOException;
-
 import javax.annotation.Nullable;
+import java.io.IOException;
 
 /** Encoders and decoders for HTML. */
 public final class Encoding {
@@ -187,13 +186,17 @@ public final class Encoding {
    *     element with a special content model.
    */
   static void encodePcdataOnto(String plainText, Appendable output)
-      throws IOException {
-    // Avoid problems with client-side template languages like
-    // Angular & Polymer which attach special significance to text like
-    // {{...}}.
-    // We split brackets so that these template languages don't end up
-    // executing expressions in sanitized text.
-    encodeHtmlOnto(plainText, output, "{<!-- -->");
+          throws IOException {
+      // Avoid problems with client-side template languages like
+      // Angular & Polymer which attach special significance to text like
+      // {{...}}.
+      // We split brackets so that these template languages don't end up
+      // executing expressions in sanitized text.
+      if (EncodingSettings.isEncodePcdataOnto()) {
+          encodeHtmlOnto(plainText, output, "{<!-- -->");
+      } else {
+          encodeHtmlOnto(plainText, output, "{");
+      }
   }
 
   /**
